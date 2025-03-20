@@ -244,5 +244,5 @@ export const profile = {
   location: "Murang'a, Kenya",
   email: "anthonymuhoro7.com",
   phone: "+254 706 471 469",
-  resumeUrl: "/mycv.rtf" // You should add a PDF resume to the public directory
+  resumeUrl: "/Resume.pdf" // You should add a PDF resume to the public directory
 };
