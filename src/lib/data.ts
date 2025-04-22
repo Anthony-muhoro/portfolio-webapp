@@ -239,7 +239,7 @@ export const services: Service[] = [
 export const profile = {
   name: "Anthony Muhoro",
   title: "Full Stack Developer",
-  photo: "https://res.cloudinary.com/dyzssa40e/image/upload/v1739451629/5866255608246815703_hyneja.jpg", // You should add a profile photo to the public directory
+  photo: "https://res.cloudinary.com/dyzssa40e/image/upload/v1745325459/WhatsApp_Image_2025-04-22_at_3.36.05_PM_ath8zi.jpg", // You should add a profile photo to the public directory
   bio: "I'm a passionate full stack developer with expertise in web and mobile application development. I love creating elegant solutions that solve real-world problems.",
   location: "Murang'a, Kenya",
   email: "anthonymuhoro7.com",

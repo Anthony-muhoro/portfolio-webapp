@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AlertCircle, CheckCircle, MapPin, Mail, Phone, Send, MessageSquare } from "lucide-react";
@@ -6,40 +5,62 @@ import { services } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const Contact = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [service, setService] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+    service: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
-    // Simple validation
-    if (!name || !email || !message || !service) {
-      setError("Please fill in all fields");
-      setLoading(false);
-      return;
-    }
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Simple validation
+      if (!formData.name || !formData.email || !formData.message || !formData.service) {
+        setError("Please fill in all fields");
+        setLoading(false);
+        return;
+      }
+
+      // Send form data to the backend
+      const response = await fetch("https://portfolioserver-r7kv.onrender.com/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message.");
+      }
+
+      // If successful
       setLoading(false);
       setSubmitted(true);
-      setName("");
-      setEmail("");
-      setMessage("");
-      setService("");
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+        service: ""
+      });
       
       // Reset submitted state after 5 seconds
       setTimeout(() => {
         setSubmitted(false);
       }, 5000);
-    }, 1500);
+
+    } catch (error) {
+      setLoading(false);
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
+    }
   };
 
   return (
@@ -166,10 +187,10 @@ const Contact = () => {
                       <input
                         type="text"
                         id="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                        placeholder="John Doe"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        className="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        
                       />
                     </div>
                     <div>
@@ -179,10 +200,10 @@ const Contact = () => {
                       <input
                         type="email"
                         id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                        placeholder="john@example.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        className="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        
                       />
                     </div>
                   </div>
@@ -193,12 +214,12 @@ const Contact = () => {
                     </label>
                     <select
                       id="service"
-                      value={service}
-                      onChange={(e) => setService(e.target.value)}
+                      value={formData.service}
+                      onChange={(e) => setFormData({...formData, service: e.target.value})}
                       className={cn(
-                        "w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white",
+                        "w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white",
                         "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors",
-                        service === "" && "text-gray-400"
+                        formData.service === "" && "text-gray-400"
                       )}
                     >
                       <option value="" disabled>Select a service</option>
@@ -215,10 +236,10 @@ const Contact = () => {
                     </label>
                     <textarea
                       id="message"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
                       rows={5}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                      className="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                       placeholder="Tell me about your project..."
                     ></textarea>
                   </div>
@@ -227,7 +248,7 @@ const Contact = () => {
                     type="submit"
                     disabled={loading}
                     className={cn(
-                      "w-full bg-primary text-white font-medium py-3 px-6 rounded-lg",
+                      "w-full bg-primary text-white font-medium py-3 px-6 rounded-xl",
                       "hover:bg-primary/90 transition-colors flex items-center justify-center",
                       loading && "opacity-70 cursor-not-allowed"
                     )}
